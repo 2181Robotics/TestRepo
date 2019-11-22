@@ -8,6 +8,8 @@
 package frc.robot.commands;
 
 import java.io.IOException;
+import java.util.Dictionary;
+import java.util.Hashtable;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
@@ -15,23 +17,30 @@ import jaci.pathfinder.PathfinderFRC;
 import jaci.pathfinder.Trajectory;
 
 public class PathStart extends Command {
+  private static Dictionary<String, Trajectory[]> paths = new Hashtable<>();
+  String path;
   private boolean forward;
-  Trajectory left_trajectory;
-  Trajectory right_trajectory;
+  // Trajectory left_trajectory;
+  // Trajectory right_trajectory;
 
   public PathStart(String path, boolean forward) {
     this.forward = forward;
-    
-    try {
-      if (forward) {
-        left_trajectory = PathfinderFRC.getTrajectory(path + ".left");
-        right_trajectory = PathfinderFRC.getTrajectory(path + ".right");
-      } else {
-        left_trajectory = PathfinderFRC.getTrajectory(path + ".right");
-        right_trajectory = PathfinderFRC.getTrajectory(path + ".left");
+    this.path = path;
+    if (paths.get(path) == null) {
+      try {
+        Trajectory[] traj = {PathfinderFRC.getTrajectory(path + ".left"),
+                            PathfinderFRC.getTrajectory(path + ".right")};
+        paths.put(path, traj);
+        // if (forward) {
+        //   left_trajectory = PathfinderFRC.getTrajectory(path + ".left");
+        //   right_trajectory = PathfinderFRC.getTrajectory(path + ".right");
+        // } else {
+        //   left_trajectory = PathfinderFRC.getTrajectory(path + ".right");
+        //   right_trajectory = PathfinderFRC.getTrajectory(path + ".left");
+        // }
+      } catch (IOException e) {
+        System.out.println("No path named "+path);
       }
-    } catch (IOException e) {
-      System.out.println("No path named "+path);
     }
     // Use requires() here to declare subsystem dependencies
     requires(Robot.driveTrain);
@@ -41,8 +50,10 @@ public class PathStart extends Command {
   @Override
   protected void initialize() {
     // Robot.driveTrain.startPath(path, forward);
-    if (left_trajectory != null && right_trajectory != null) {
-      Robot.driveTrain.startPath(left_trajectory, right_trajectory, forward);
+    Trajectory[] traj = paths.get(path);
+    if (traj != null) {
+      if (forward) Robot.driveTrain.startPath(traj[1], traj[0], forward);
+      else Robot.driveTrain.startPath(traj[0], traj[1], forward);
     }
   }
 

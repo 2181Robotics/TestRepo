@@ -10,6 +10,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.robot.commands.PathGroup;
+import frc.robot.commands.PathStart;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -18,9 +19,11 @@ import frc.robot.commands.PathGroup;
 public class OI {
   public Joystick j = new Joystick(0);
   JoystickButton button = new JoystickButton(j, 1);
+  JoystickButton button2 = new JoystickButton(j, 2);
 
   public OI () {
-    button.whenPressed(new PathGroup("R_S_B"));
+    button.whenPressed(new PathGroup("TA"));
+    button2.whenPressed(new PathStart("c", true));
   }
   //// CREATING BUTTONS
   // One type of button is a joystick button which is any button on a
