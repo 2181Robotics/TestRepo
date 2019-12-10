@@ -17,6 +17,7 @@ public class PathGroup extends CommandGroup {
    * Add your docs here.
    */
   public PathGroup(String path) {
+    addSequential(new ResetGyro());
     BufferedReader reader;
 		try {
       boolean forward = true;
